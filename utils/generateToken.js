@@ -9,8 +9,10 @@ const generateTokenAndSetCookie = (userId, res) => {
     httpOnly: true,
     sameSite: "none",
     maxAge: 15 * 24 * 60 * 60 * 1000,
-    secure: true,
+    secure: process.env.NODE_ENV !== "dev",
   });
+
+  return token;
 };
 
 export default generateTokenAndSetCookie;

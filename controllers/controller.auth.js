@@ -48,10 +48,10 @@ export const registerUser = async (req, res) => {
     const { userId, docId } = userIdGenerator(name);
     await setUser(docId, { userId, name, email });
 
-    generateTokenAndSetCookie(userId, res);
+    const token = generateTokenAndSetCookie(userId, res);
     res.status(201).json({
       success: true,
-      data: { userId },
+      data: { userId, token },
       message: "User registered successfully",
     });
   } catch (error) {
@@ -85,10 +85,10 @@ export const login = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Invalid OTP or OTP expired" });
 
-    generateTokenAndSetCookie(user.userId, res);
+    const token = generateTokenAndSetCookie(user.userId, res);
     res.status(200).json({
       success: true,
-      data: { userId: user.userId },
+      data: { userId: user.userId, token },
       message: "Login successful",
     });
   } catch (err) {
@@ -120,6 +120,6 @@ export const logout = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-  generateTokenAndSetCookie(req.user.userId, res);
-  res.status(200).json({ success: true, data: req.user });
+  const token = generateTokenAndSetCookie(req.user.userId, res);
+  res.status(200).json({ success: true, data: { ...req.user, token } });
 };
